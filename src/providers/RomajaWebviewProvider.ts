@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-import * as path from "path";
 import * as fs from "fs";
 
 export class RomajaWebviewProvider implements vscode.WebviewViewProvider {
@@ -39,7 +38,10 @@ export class RomajaWebviewProvider implements vscode.WebviewViewProvider {
     }
 
     private _getHtmlForWebview(_webview: vscode.Webview): string {
-        const htmlPath = path.join(this._context.extensionPath, "src", "webview.html");
+        // Use extensionUri to properly resolve the HTML file path
+        // The HTML file is in the media folder which is included in the package
+        const htmlUri = vscode.Uri.joinPath(this._context.extensionUri, "media", "webview.html");
+        const htmlPath = htmlUri.fsPath;
         
         if (!fs.existsSync(htmlPath)) {
             throw new Error(`HTML file not found at ${htmlPath}`);
