@@ -30,9 +30,7 @@ export default tseslint.config(
         },
       ],
       'quotes': ['error', 'double'],
-      '@typescript-eslint/quotes': ['error', 'double'],
       'object-curly-spacing': ['error', 'always'],
-      '@typescript-eslint/object-curly-spacing': ['error', 'always'],
     },
   },
   {
