@@ -8,7 +8,7 @@ A VS Code extension helper.
 
 ## Requirements
 
-- VS Code 1.74.0 or higher
+- VS Code 1.75.0 or higher
 
 ## Installation
 

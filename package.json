@@ -5,13 +5,10 @@
   "version": "0.0.1",
   "license": "MIT",
   "engines": {
-    "vscode": "^1.74.0"
+    "vscode": "^1.75.0"
   },
   "categories": [
     "Other"
-  ],
-  "activationEvents": [
-    "*"
   ],
   "main": "./out/extension.js",
   "contributes": {
