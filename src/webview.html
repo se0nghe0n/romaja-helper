@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Romaja Helper</title>
+    <style>
+        :root {
+            --container-padding: 16px;
+            --input-padding: 8px 12px;
+            --border-radius: 4px;
+        }
+
+        body {
+            font-family: var(--vscode-font-family);
+            padding: var(--container-padding);
+            margin: 0;
+            color: var(--vscode-foreground);
+            background-color: var(--vscode-editor-background);
+            line-height: 1.5;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            max-width: 100%;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--vscode-input-placeholderForeground);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: var(--input-padding);
+            border: 1px solid var(--vscode-input-border);
+            background-color: var(--vscode-input-background);
+            color: var(--vscode-input-foreground);
+            font-family: var(--vscode-editor-font-family);
+            font-size: 13px;
+            border-radius: var(--border-radius);
+            resize: vertical;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        textarea:focus {
+            border-color: var(--vscode-focusBorder);
+            ring: 1px solid var(--vscode-focusBorder);
+        }
+
+        textarea::placeholder {
+            color: var(--vscode-input-placeholderForeground);
+        }
+
+        /* Options Styling */
+        .options-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background-color: var(--vscode-settings-textInputBackground);
+            padding: 8px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--vscode-widget-border);
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .radio-item input[type="radio"] {
+            margin: 0;
+            cursor: pointer;
+            accent-color: var(--vscode-button-background);
+        }
+
+        button {
+            padding: 10px 16px;
+            background-color: var(--vscode-button-background);
+            color: var(--vscode-button-foreground);
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            width: 100%;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        button:hover {
+            background-color: var(--vscode-button-hoverBackground);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: var(--vscode-button-secondaryBackground);
+        }
+
+        .preview {
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            gap: 8px;
+            padding: 12px;
+            background-color: var(--vscode-editor-inactiveSelectionBackground);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--vscode-widget-border);
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .preview.show {
+            display: flex;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .preview-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--vscode-descriptionForeground);
+            text-transform: uppercase;
+        }
+
+        .preview-text {
+            font-family: var(--vscode-editor-font-family);
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--vscode-foreground);
+            word-break: break-all;
+            white-space: pre-wrap;
+            user-select: text;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Helper for keyboard shortcut hint */
+        .shortcut-hint {
+            font-size: 11px;
+            color: var(--vscode-descriptionForeground);
+            text-align: center;
+            margin-top: -8px;
+            opacity: 0.8;
+        }
+        
+        kbd {
+            background-color: var(--vscode-keybindingLabel-background);
+            color: var(--vscode-keybindingLabel-foreground);
+            border: 1px solid var(--vscode-keybindingLabel-border);
+            border-bottom-color: var(--vscode-keybindingLabel-bottomBorder);
+            border-radius: 3px;
+            box-shadow: inset 0 -1px 0 var(--vscode-widget-shadow);
+            display: inline-block;
+            font-size: 11px;
+            line-height: 10px;
+            padding: 3px 5px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="input-group">
+            <label for="hangul-input">Input</label>
+            <textarea 
+                id="hangul-input" 
+                placeholder="변환할 한글을 입력하세요..."
+                spellcheck="false"
+            ></textarea>
+        </div>
+
+        <div class="options-group">
+            <label>Format Options</label>
+            <div class="radio-group">
+                <label class="radio-item">
+                    <input type="radio" name="casing" value="capitalize" checked>
+                    Capitalize (Default)
+                </label>
+                <label class="radio-item">
+                    <input type="radio" name="casing" value="camelCase">
+                    CamelCase
+                </label>
+                <label class="radio-item">
+                    <input type="radio" name="casing" value="lowercase">
+                    all lowercase
+                </label>
+            </div>
+        </div>
+        
+        <button id="convert-btn">
+            <span>Convert to Romaja</span>
+        </button>
+        
+        <div class="shortcut-hint">
+            Press <kbd>Cmd</kbd>+<kbd>Enter</kbd> to convert
+        </div>
+
+        <div id="preview" class="preview">
+            <div class="preview-header">
+                <span class="preview-label">Result</span>
+            </div>
+            <div class="preview-text" id="preview-text"></div>
+        </div>
+    </div>
+
+    <!-- Load koroman library from CDN -->
+    <script src="https://cdn.jsdelivr.net/gh/gerosyab/koroman@js-v1.0.12/js/dist/koroman.browser.js"></script>
+    
+    <script>
+        const vscode = acquireVsCodeApi();
+        
+        const hangulInput = document.getElementById('hangul-input');
+        const convertBtn = document.getElementById('convert-btn');
+        const preview = document.getElementById('preview');
+        const previewText = document.getElementById('preview-text');
+        const casingInputs = document.getElementsByName('casing');
+
+        // Detect OS for keyboard shortcut hint
+        const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+        if (!isMac) {
+            const hint = document.querySelector('.shortcut-hint');
+            hint.innerHTML = 'Press <kbd>Ctrl</kbd>+<kbd>Enter</kbd> to convert';
+        }
+
+        // Check if koroman is loaded
+        if (typeof koroman === 'undefined') {
+            convertBtn.disabled = true;
+            convertBtn.innerHTML = '<span>Loading library...</span>';
+            
+            // Retry after a short delay
+            setTimeout(() => {
+                if (typeof koroman !== 'undefined') {
+                    convertBtn.disabled = false;
+                    convertBtn.innerHTML = '<span>Convert to Romaja</span>';
+                } else {
+                    convertBtn.innerHTML = '<span>Library failed to load</span>';
+                    vscode.postMessage({
+                        command: 'error',
+                        text: 'Failed to load koroman library'
+                    });
+                }
+            }, 1000);
+        }
+
+        function toCamelCase(str) {
+            return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) {
+                return index === 0 ? word.toLowerCase() : word.toUpperCase();
+            }).replace(/\s+/g, '');
+        }
+
+        function applyCasing(text, casing) {
+            if (!text) return text;
+
+            switch (casing) {
+                case 'lowercase':
+                    return text.toLowerCase();
+                case 'camelCase':
+                    // First convert to spaces to ensure separation, then camelCase
+                    // Since koroman output might be space-separated or not depending on input
+                    return text.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase());
+                case 'capitalize':
+                default:
+                    return text.charAt(0).toUpperCase() + text.slice(1);
+            }
+        }
+
+        function convertHangul() {
+            const hangulText = hangulInput.value.trim();
+            
+            if (!hangulText) {
+                preview.classList.remove('show');
+                return;
+            }
+
+            if (typeof koroman === 'undefined') {
+                vscode.postMessage({
+                    command: 'error',
+                    text: 'Koroman library is not loaded yet. Please wait a moment and try again.'
+                });
+                return;
+            }
+
+            try {
+                let romanized = koroman.romanize(hangulText);
+                
+                // Get selected casing
+                let selectedCasing = 'capitalize';
+                for (const input of casingInputs) {
+                    if (input.checked) {
+                        selectedCasing = input.value;
+                        break;
+                    }
+                }
+
+                // Apply casing
+                romanized = applyCasing(romanized, selectedCasing);
+                
+                // Show preview
+                previewText.textContent = romanized;
+                preview.classList.add('show');
+                
+                // Send message to extension to insert text
+                vscode.postMessage({
+                    command: 'convert',
+                    text: hangulText,
+                    romanized: romanized
+                });
+            } catch (error) {
+                vscode.postMessage({
+                    command: 'error',
+                    text: `Conversion error: ${error.message}`
+                });
+            }
+        }
+
+        convertBtn.addEventListener('click', convertHangul);
+
+        // Allow Enter key to convert (Ctrl+Enter or Cmd+Enter)
+        hangulInput.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                convertHangul();
+            }
+        });
+        
+        // Auto focus input
+        window.addEventListener('message', event => {
+            const message = event.data;
+            if (message.command === 'focus') {
+                hangulInput.focus();
+            }
+        });
+    </script>
+</body>
+</html>

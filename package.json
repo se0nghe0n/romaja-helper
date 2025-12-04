@@ -1,0 +1,70 @@
+{
+  "name": "romaja-helper",
+  "displayName": "Romaja Helper",
+  "description": "Convert Hangul text to Romanized text using koroman library",
+  "version": "0.0.1",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "romaja-helper-container",
+          "title": "Romaja Helper",
+          "icon": "$(whole-word)"
+        }
+      ]
+    },
+    "views": {
+      "romaja-helper-container": [
+        {
+          "type": "webview",
+          "id": "romaja-helper.input",
+          "name": "Romaja Input"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "romaja-helper.convertPreviousWord",
+        "title": "Convert Previous Word to Romaja"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "romaja-helper.convertPreviousWord",
+        "key": "ctrl+shift+r",
+        "mac": "cmd+shift+r",
+        "when": "editorTextFocus"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "yarn compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.74.0",
+    "eslint": "^9.0.0",
+    "typescript": "^5.6.0",
+    "typescript-eslint": "^8.0.0"
+  },
+  "dependencies": {
+    "koroman": "^1.0.12"
+  }
+}
